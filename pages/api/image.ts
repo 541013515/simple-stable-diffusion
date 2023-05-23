@@ -5,8 +5,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { prompt, negative_prompt } = req.body;
-  console.info(negative_prompt)
+  const { prompt, negative_prompt, steps, cfg_scale, strength } = req.body;
+  const width = 512
+  const height = 512
 
   try {
     const response = await fetch(`${TAKOMO}`, {
@@ -18,7 +19,12 @@ export default async function handler(
       },
       body: JSON.stringify({
         prompt,
-        negative_prompt
+        negative_prompt,
+        width,
+        height,
+        steps,
+        cfg_scale,
+        strength,
       }),
     });
     const json = await response.json();

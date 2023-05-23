@@ -5,9 +5,35 @@ import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useInterval } from "../utils/use-interval";
 
+function Number({ value, onChange }) {
+  const handleChange = (event) => {
+    const value = parseInt(event.target.value);
+    if (!isNaN(value)) {
+      onChange(value);
+    }
+  };
+
+  return <input type="text" value={value} onChange={handleChange} />;
+}
+
+function Float({ value, onChange }) {
+  const handleChange = (event) => {
+    const value = parseFloat(event.target.value);
+    if (!isNaN(value)) {
+      onChange(value);
+    }
+  };
+
+  return <input type="text" value={value} onChange={handleChange} />;
+}
+
+
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [negative_prompt, setNegativePrompt] = useState("");
+  const [steps, setSteps] = useState(80);
+  const [cfg_scale, setCFG] = useState(24);
+  const [strength, setStrength] = useState(0.3);
   const [loading, setLoading] = useState(false);
   const [messageId, setMessageId] = useState("");
   const [image, setImage] = useState(null);
@@ -37,7 +63,10 @@ export default function Home() {
       },
       body: JSON.stringify({
         prompt,
-        negative_prompt
+        negative_prompt,
+        steps,
+        cfg_scale,
+        strength,
       }),
     });
     const json = await response.json();
@@ -75,6 +104,12 @@ export default function Home() {
               onChange={(e) => setNegativePrompt(e.target.value)}
             />
             <br/>
+            {/* <Number value={steps} onChange={setSteps}></Number>
+            <br/>
+            <Number value={cfg_scale} onChange={setCFG}></Number>
+            <br/>
+            <Float value={strength} onChange={setStrength}></Float>
+            <br/> */}
             <button
               className="min-h-[40px] shadow-sm py-2 inline-flex justify-center font-medium items-center px-4 bg-green-600 text-gray-100 sm:ml-2 rounded-md hover:bg-green-700"
               type="submit"
