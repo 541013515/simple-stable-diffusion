@@ -1,32 +1,28 @@
 import { NextApiRequest, NextApiResponse } from "next";
-const QSTASH = `https://qstash.upstash.io/v1/publish/`;
-const DALL_E = "https://api.openai.com/v1/images/generations";
-const VERCEL_URL = "https://dalle-2-jade.vercel.app";
+const TAKOMO = "https://api.takomo.ai/5eec0b3a-894a-4534-a8e1-45d767990a45";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { prompt } = req.query;
+  const { prompt, negative_prompt } = req.body;
+  console.info(negative_prompt)
+
   try {
-    const response = await fetch(`${QSTASH + DALL_E}`, {
+    const response = await fetch(`${TAKOMO}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.QSTASH_TOKEN}`,
+        Authorization: `Bearer ${process.env.TAKOMO_API_KEY}`,
         // Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "upstash-forward-Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
-        "Upstash-Callback": `${VERCEL_URL}/api/callback`,
       },
       body: JSON.stringify({
         prompt,
-        n: 1,
-        size: "1024x1024",
-        response_format: "b64_json",
+        negative_prompt
       }),
     });
     const json = await response.json();
-    return res.status(202).json({ id: json.messageId });
+    return res.status(201).json({ id: json.id });
   } catch (error) {
     return res
       .status(500)

@@ -7,6 +7,7 @@ import { useInterval } from "../utils/use-interval";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
+  const [negative_prompt, setNegativePrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [messageId, setMessageId] = useState("");
   const [image, setImage] = useState(null);
@@ -18,17 +19,27 @@ export default function Home() {
       const json = await res.json();
       if (res.status === 200) {
         setLoading(false);
-        setImage(json.data[0].url);
+        setImage(json.img);
+        setCanShowImage(true);
       }
     },
-    loading ? 1000 : null
+    loading ? 5000 : null
   );
 
   async function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     toast("Generating your image...", { position: "top-center" });
-    const response = await fetch(`/api/image?prompt=${prompt}`);
+    const response = await fetch(`/api/image`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt,
+        negative_prompt
+      }),
+    });
     const json = await response.json();
     setMessageId(json.id);
   }
@@ -40,26 +51,32 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Dall-E 2 AI Image Generator</title>
+        <title>Simple Stable Diffusion</title>
       </Head>
       <div className="antialiased mx-auto px-4 py-20 h-screen bg-gray-100">
         <Toaster />
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-5xl tracking-tighter pb-10 font-bold text-gray-800">
-            Dall-E 2 image generator
+          Simple Stable Diffusion
           </h1>
           <form
-            className="flex w-full sm:w-auto flex-col sm:flex-row mb-10"
+            className="flex w-full sm:w-auto flex-col sm:flex-col mb-10"
             onSubmit={submitForm}
           >
-            <input
+            <textarea
               className="shadow-sm text-gray-700 rounded-sm px-3 py-2 mb-4 sm:mb-0 sm:min-w-[600px]"
-              type="text"
-              placeholder="Prompt for DALL-E"
+              placeholder="Prompt"
               onChange={(e) => setPrompt(e.target.value)}
             />
+            <br/>
+            <textarea
+              className="shadow-sm text-gray-700 rounded-sm px-3 py-2 mb-4 sm:mb-0 sm:min-w-[600px]"
+              placeholder="Negative Prompt"
+              onChange={(e) => setNegativePrompt(e.target.value)}
+            />
+            <br/>
             <button
-              className="min-h-[40px] shadow-sm sm:w-[100px] py-2 inline-flex justify-center font-medium items-center px-4 bg-green-600 text-gray-100 sm:ml-2 rounded-md hover:bg-green-700"
+              className="min-h-[40px] shadow-sm py-2 inline-flex justify-center font-medium items-center px-4 bg-green-600 text-gray-100 sm:ml-2 rounded-md hover:bg-green-700"
               type="submit"
             >
               {showLoadingState && (
@@ -87,15 +104,16 @@ export default function Home() {
               {!showLoadingState ? "Generate" : ""}
             </button>
           </form>
-          <div className="relative flex w-full items-center justify-center">
+          {image && (
+            <div className="relative flex w-full items-center justify-center">
             <div className="w-full sm:w-[400px] h-[400px] rounded-md shadow-md relative">
               <img
-                alt={`Dall-E representation of: ${prompt}`}
+                alt={`Stable Diffusion representation of: ${prompt}`}
                 className={cn("rounded-md shadow-md h-full object-cover", {
                   "opacity-100": canShowImage,
                 })}
-                // src={image}
-                src={`data:image/png;base64,${image}`}
+                src={image}
+                //src={`data:image/png;base64,${image}`}
               />
             </div>
 
@@ -110,6 +128,7 @@ export default function Home() {
               )}
             ></div>
           </div>
+          )}
         </div>
       </div>
     </>
