@@ -80,13 +80,13 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Simple Stable Diffusion</title>
+        <title>废柴画家</title>
       </Head>
       <div className="antialiased mx-auto px-4 py-20 h-screen bg-gray-100">
         <Toaster />
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-5xl tracking-tighter pb-10 font-bold text-gray-800">
-          Simple Stable Diffusion
+          废柴画家
           </h1>
           <form
             className="flex w-full sm:w-auto flex-col sm:flex-col mb-10"
