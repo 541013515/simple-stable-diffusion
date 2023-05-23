@@ -106,7 +106,7 @@ export default function Home() {
           </form>
           {image && (
             <div className="relative flex w-full items-center justify-center">
-            <div className="w-full sm:w-[400px] h-[400px] rounded-md shadow-md relative">
+            <div className="w-full sm:w-[512px] h-[512px] rounded-md shadow-md relative">
               <img
                 alt={`Stable Diffusion representation of: ${prompt}`}
                 className={cn("rounded-md shadow-md h-full object-cover", {
@@ -119,7 +119,7 @@ export default function Home() {
 
             <div
               className={cn(
-                "w-full sm:w-[400px] absolute top-0.5 overflow-hidden rounded-2xl bg-white/5 shadow-xl shadow-black/5",
+                "w-full sm:w-[512px] absolute top-0.5 overflow-hidden rounded-2xl bg-white/5 shadow-xl shadow-black/5",
                 {
                   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-gray-500/10 before:to-transparent":
                     showLoadingState,
